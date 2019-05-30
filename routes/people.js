@@ -66,7 +66,17 @@ router.get('/new/', (req, res) => {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
-
+router.post('/', function(req, res) {
+  var nome = db.escape(req.body.name);
+  var query_sql = `INSERT INTO person (id, name, alive, eatenBy) VALUES (NULL, '${nome}', 1, NULL)`;
+  db.query(query_sql, function(err, result) {
+    if(err){
+      res.send(401, 'Erro: A pessoa a ser inserida é invalida');
+    }else{
+      res.redirect('/people/');
+    }
+  });
+});
 
 /* DELETE uma pessoa */
 // Exercício 2: IMPLEMENTAR AQUI
@@ -75,7 +85,16 @@ router.get('/new/', (req, res) => {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
-
-
+router.delete('/:id', function(req, res) {
+  var id_pessoa = db.escape(req.params.id);
+  var query_sql = `DELETE FROM person WHERE id = ${id_pessoa}`;
+  db.query(query_sql, function(err, result) {
+    if(err){
+      res.send(401, 'Erro: A pessoa que você quer deletar não existe');
+    }else{
+      res.redirect('/people/');
+    }
+  });
+});
 
 module.exports = router;
